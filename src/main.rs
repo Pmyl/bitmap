@@ -59,12 +59,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     // 10101000 00000000 00000000 00000000
     // BRBRBPPP PPPPPPPP PPPPPPPP PPPPPPPP
 
-    let square_size_in_pixels = (config.width / config.checker_size) as i32;
+    let square_size_in_pixels = config
+        .width
+        .checked_div(config.checker_size)
+        .ok_or_else(|| "Invalid checker size")? as i32;
 
     for y in 0..height_in_pixels {
         let mut remaining_width = width_in_pixels as u32;
 
-        let mut x = 0;
+        let mut x: i32 = 0;
 
         while remaining_width > 0 {
             let mut row_part = 0;
@@ -72,7 +75,14 @@ fn main() -> Result<(), Box<dyn Error>> {
             remaining_width = remaining_width.saturating_sub(32);
 
             for i in 0..width_of_row_part {
-                if (x / square_size_in_pixels + y / square_size_in_pixels) % 2 == 0 {
+                let x_square = x
+                    .checked_div(square_size_in_pixels)
+                    .ok_or_else(|| "Invalid checker size")?;
+                let y_square = y
+                    .checked_div(square_size_in_pixels)
+                    .ok_or_else(|| "Invalid checker size")?;
+
+                if (x_square + y_square) % 2 == 0 {
                     row_part += 1 << (31 - i);
                 }
 
