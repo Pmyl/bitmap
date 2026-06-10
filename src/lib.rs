@@ -102,7 +102,7 @@ impl BitmapMaker {
         let dib_header_size: u32 = 40;
         let color_table_in_bytes: u32 = 2u32.pow(bits_per_pixel as u32) * 4;
 
-        let empty_colour = 0xFF0000AE;
+        let empty_colour = 0xFFFFFF;
 
         let mut color_table = vec![empty_colour; color_table_in_bytes as usize / 4];
 
