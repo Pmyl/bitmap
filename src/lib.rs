@@ -79,13 +79,17 @@ impl BitmapMaker {
     }
 
     pub fn make(self) -> Result<Bitmap, Box<dyn Error>> {
-        let unique_colours = self
+        let empty_colour = 0xFFFFFF;
+
+        let mut unique_colours = self
             .pixels
             .iter()
             .map(|x| x.1)
             .collect::<HashSet<_>>()
             .into_iter()
             .collect::<Vec<_>>();
+
+        unique_colours.push(empty_colour);
 
         let bits_per_pixel: u16 = unique_colours.len().next_power_of_two().ilog2() as u16;
         // TODO handle bits per pixels when they are not divisor of 32 (ex 3)
@@ -101,8 +105,6 @@ impl BitmapMaker {
         let file_header_size: u32 = 14;
         let dib_header_size: u32 = 40;
         let color_table_in_bytes: u32 = 2u32.pow(bits_per_pixel as u32) * 4;
-
-        let empty_colour = 0xFFFFFF;
 
         let mut color_table = vec![empty_colour; color_table_in_bytes as usize / 4];
 
