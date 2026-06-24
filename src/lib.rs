@@ -2,7 +2,6 @@ use std::{
     collections::{HashMap, HashSet},
     error::Error,
     io::Write,
-    ops::{Add, Mul},
 };
 
 pub struct Bitmap {
