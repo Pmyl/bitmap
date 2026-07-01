@@ -11,7 +11,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     let config = read_config();
 
     let bitmap = BitmapMaker::new(config.width as usize, config.height as usize)
-        .with(Point { x: 0, y: 0 }, 0xFFAE0000)
+        .with(Point { x: 0, y: 0 }, 0xFFFFFF00)
+        .with(Point { x: 0, y: 1 }, 0xFFFF00FF)
+        .with(Point { x: 0, y: 2 }, 0xFF00FFFF)
+        .with(Point { x: 0, y: 3 }, 0xFF0000FF)
         .make()?;
 
     let mut image_file = fs::OpenOptions::new()
