@@ -97,8 +97,13 @@ impl BitmapMaker {
             .collect::<Vec<_>>();
 
         let bits_per_pixel: u16 = unique_colours.len().next_power_of_two().ilog2() as u16;
-        // TODO handle bits per pixels when they are not divisor of 32 (ex 3)
         let bits_per_pixel = bits_per_pixel.next_power_of_two();
+        // Cannot use 2 bits per pixel
+        let bits_per_pixel = if bits_per_pixel == 2 {
+            4
+        } else {
+            bits_per_pixel
+        };
 
         let width_in_pixels: i32 = self.width as i32;
         let height_in_pixels: i32 = self.height as i32;

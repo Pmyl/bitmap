@@ -15,6 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .with(Point { x: 0, y: 1 }, 0xFFFF00FF)
         .with(Point { x: 0, y: 2 }, 0xFF00FFFF)
         .with(Point { x: 0, y: 3 }, 0xFF0000FF)
+        .with(Point { x: 0, y: 4 }, 0xFF000AFF)
         .make()?;
 
     let mut image_file = fs::OpenOptions::new()
