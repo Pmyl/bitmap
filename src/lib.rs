@@ -52,9 +52,12 @@ pub struct DibHeader {
 
 pub struct Pixel(Point, u32);
 
+// (0,0) is top left
 pub struct BitmapMaker {
     pub width: usize,
     pub height: usize,
+    pub dx: i16,
+    pub dy: i16,
     pub pixels: Vec<Pixel>,
 }
 
@@ -75,12 +78,32 @@ impl BitmapMaker {
         BitmapMaker {
             width,
             height,
+            dx: 0,
+            dy: 0,
             pixels: vec![],
         }
     }
 
     pub fn with(mut self, point: Point, colour: u32) -> Self {
-        self.pixels.push(Pixel(point, colour));
+        self.pixels.push(Pixel(
+            Point {
+                x: (point.x as i16 + self.dx) as usize,
+                y: (point.y as i16 + self.dy) as usize,
+            },
+            colour,
+        ));
+        return self;
+    }
+
+    // If the point comes from a plane where (0, 0) is bottom left
+    pub fn with_inverted_v(mut self, point: Point, colour: u32) -> Self {
+        self.pixels.push(Pixel(
+            Point {
+                x: (point.x as i16 + self.dx) as usize,
+                y: self.height - (point.y as i16 + self.dy) as usize,
+            },
+            colour,
+        ));
         return self;
     }
 
@@ -178,6 +201,21 @@ impl BitmapMaker {
             color_table: color_table,
             pixel_array: pixel_array,
         })
+    }
+
+    pub fn delta(&mut self, dx: i16, dy: i16) {
+        self.dx = dx;
+        self.dy = dy;
+    }
+
+    pub fn add_delta(&mut self, dx: i16, dy: i16) {
+        self.dx = self.dx + dx;
+        self.dy = self.dy + dy;
+    }
+
+    pub fn reset_delta(&mut self) {
+        self.dx = 0;
+        self.dy = 0;
     }
 }
 
